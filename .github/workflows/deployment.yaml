@@ -32,12 +32,20 @@ jobs:
         run: npm ci
       - name: Lint application
         run: npm run lint
-  build: 
-    runs-on: ubuntu-latest
+  build:
     needs: [test, lint]
+    strategy: 
+      matrix: 
+        node-version: [14, 16]
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps: 
       - name: Get repository code
         uses: actions/checkout@v3
+      - name: Install node js
+        uses: actions/setup-node@v3
+        with: 
+          node-version: ${{ matrix.node-version }}
       - name: Cache dependencies
         uses: actions/cache@v3
         with: 
